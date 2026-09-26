@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Only this one document (used by the NOW page) can be read or
+    // written, by anyone with the link -- no sign-in required.
+    // Everything else in the project stays locked.
+    match /now/state {
+      allow read, write: if true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
