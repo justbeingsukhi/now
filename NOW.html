@@ -310,9 +310,10 @@ details.day>summary::-webkit-details-marker{display:none}
 details.day>summary::after{content:"";position:absolute;right:3px;top:50%;width:13px;height:13px;margin-top:-10px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);transition:transform .3s ease}
 details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 .exlist{list-style:none;margin:4px 0 6px;padding:0;display:grid;gap:9px}
-.exlist li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:1.3rem;line-height:1.3}
-.ex-name{font-weight:700}
-.ex-spec{color:var(--ink-2);white-space:nowrap}
+.exlist li{display:flex;align-items:flex-start;gap:8px;font-size:1.3rem;line-height:1.3}
+.exlist .ex-body{flex:1;min-width:0}
+.exlist .ex-name{display:block;font-weight:700}
+.exlist .ex-spec{display:block;color:var(--ink-2)}
 
 .checks{list-style:none;padding:0;display:grid;gap:14px}
 .cb{display:flex;align-items:center;gap:16px;width:100%;padding:6px 0;border:0;background:none;text-align:left;cursor:pointer;font-weight:700;font-size:2.3rem;line-height:1.05;-webkit-tap-highlight-color:transparent}
@@ -1323,9 +1324,23 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
   }
 
   /* ---------- Training log (view-only) ---------- */
+  function buildExerciseRow(dayId, name, spec) {
+    var li = document.createElement('li');
+    var body = document.createElement('div'); body.className = 'ex-body';
+    var nm = document.createElement('span'); nm.className = 'ex-name'; nm.contentEditable = 'true'; nm.textContent = name || '';
+    var sp = document.createElement('span'); sp.className = 'ex-spec'; sp.contentEditable = 'true'; sp.textContent = spec || '';
+    body.appendChild(nm); body.appendChild(sp);
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove exercise'); del.textContent = '\u00D7';
+    li.appendChild(body); li.appendChild(del);
+    var save = function () { if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); }); };
+    nm.addEventListener('input', save);
+    sp.addEventListener('input', save);
+    del.addEventListener('click', function () { li.remove(); save(); });
+    return li;
+  }
   function renderTraining(days, host) {
     host.innerHTML = '';
-    days.forEach(function (d) {
+    days.forEach(function (d, di) {
       if (!d.ex.length) {
         var p = document.createElement('p'); p.className = 'rest'; p.setAttribute('data-hand', '');
         p.textContent = d.day + ' \u2014 ' + d.split;
@@ -1337,15 +1352,17 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
       sum.textContent = d.day + ' \u2014 ' + d.split;
       det.appendChild(sum);
       var ul = document.createElement('ul'); ul.className = 'exlist';
-      d.ex.forEach(function (pair) {
-        var li = document.createElement('li');
-        var nm = document.createElement('span'); nm.className = 'ex-name'; nm.setAttribute('data-hand', ''); nm.textContent = pair[0];
-        var sp = document.createElement('span'); sp.className = 'ex-spec'; sp.textContent = pair[1];
-        li.appendChild(nm); li.appendChild(sp);
-        ul.appendChild(li);
-        hand(nm);
-      });
+      d.ex.forEach(function (pair) { ul.appendChild(buildExerciseRow(di, pair[0], pair[1])); });
       det.appendChild(ul);
+      var add = document.createElement('button'); add.type = 'button'; add.className = 'add';
+      add.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add exercise';
+      add.addEventListener('click', function () {
+        var row = buildExerciseRow(di, '', '');
+        ul.appendChild(row);
+        if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); });
+        row.querySelector('.ex-name').focus();
+      });
+      det.appendChild(add);
       host.appendChild(det);
       hand(sum);
     });
@@ -1357,7 +1374,7 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
       var head = cleanText(el.querySelector('summary')).split('\u2014');
       var ex = [];
       Array.prototype.forEach.call(el.querySelectorAll('.exlist li'), function (li) {
-        ex.push([cleanText(li.querySelector('.ex-name')), li.querySelector('.ex-spec').textContent.trim()]);
+        ex.push([li.querySelector('.ex-name').textContent.trim(), li.querySelector('.ex-spec').textContent.trim()]);
       });
       days.push({ day: (head[0] || '').trim(), split: (head[1] || '').trim(), ex: ex });
     });
@@ -1708,6 +1725,7 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
     if (f['fit.vitals'] && !isEditingWithin($('vital-rows')) && !shouldSkipRender('fit.vitals', f['fit.vitals'])) { renderMTable(f['fit.vitals'], $('vital-rows'), ['', 'Goal', 'Baseline', 'Current']); wireMTable($('vital-rows'), 'fit.vitals', null); }
     if (f['fit.diet'] && !isEditingWithin($('diet-list')) && !shouldSkipRender('fit.diet', f['fit.diet'])) { renderFList(f['fit.diet'], $('diet-list')); }
     if (f['fit.nutrition'] && !isEditingWithin($('nutri-rows')) && !shouldSkipRender('fit.nutrition', f['fit.nutrition'])) { renderMTable(f['fit.nutrition'], $('nutri-rows'), ['Nutrient', 'Recommended', 'Current']); wireMTable($('nutri-rows'), 'fit.nutrition', updateNutriStreak); }
+    if (f['fit.training'] && !isEditingWithin($('training-days')) && !shouldSkipRender('fit.training', f['fit.training'])) { renderTraining(f['fit.training'], $('training-days')); }
     updateCompStreak(); updateCircStreak(); updateNutriStreak();
 
     if (!currentNoteId && !shouldSkipRender('notes', f.notes || [])) renderNotesIndex();
