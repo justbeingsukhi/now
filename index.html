@@ -50,7 +50,6 @@ button{font:inherit;color:inherit}
   position:relative;
   display:grid;
   max-width:600px;margin:0 auto;
-  min-height:calc(100dvh - 28px);
   perspective:2200px;perspective-origin:18% 50%;
 }
 .stack > *{grid-area:1/1}
@@ -91,7 +90,7 @@ button{font:inherit;color:inherit}
 
 /* home page */
 .doodles{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:inherit}
-.ribbon{position:absolute;top:0;right:16%;width:14px;height:96px;background:linear-gradient(90deg,#4a1019,#7a1b28 50%,#4a1019);clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);z-index:2;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.35))}
+.ribbon{position:absolute;top:0;left:40%;width:14px;height:96px;background:linear-gradient(90deg,#4a1019,#7a1b28 50%,#4a1019);clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);z-index:2;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.35))}
 .content{position:relative;z-index:1;padding:26px 16px 44px 30px}
 h1{
   margin-top:24px;
@@ -102,7 +101,17 @@ h1{
 }
 
 /* window */
-.top{display:flex;align-items:flex-start}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;align-items:center;gap:8px;padding-top:3px}
+.tab{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 13px 9px;border:2.4px solid var(--ink);
+  border-radius:5px 3px 6px 4px;background:#fff;cursor:pointer;font:700 1.28rem/1 var(--font);color:var(--ink);
+  filter:url(#wob);-webkit-tap-highlight-color:transparent;
+}
+.tab.padlock{padding:8px}
+.tab .ic{width:19px;height:19px;flex:none}
+.tab .ic path,.tab .ic rect{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .mini{
   --w:64px;
   position:relative;display:block;padding:0;border:0;background:none;cursor:pointer;
@@ -230,6 +239,13 @@ h1{
 .back svg{width:100%;height:100%;overflow:visible;filter:url(#wob)}
 .back path{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .back:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.export{
+  position:absolute;z-index:2;top:22px;right:20px;width:40px;height:38px;padding:0;
+  border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.export svg{width:100%;height:100%;overflow:visible;filter:url(#wob)}
+.export path{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.export:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
 .title{
   margin:62px 0 0;
   font:700 clamp(3rem,16vw,6.4rem)/.95 var(--font);
@@ -241,11 +257,21 @@ h1{
 .scrib path{fill:none;stroke:var(--ink);stroke-width:3.6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
 .sub.go .scrib path{animation:draw 1s cubic-bezier(.4,0,.2,1) .1s forwards}
 
-.boxes{display:grid;gap:22px}
+.boxes{display:grid;gap:16px}
 .box{position:relative;padding:12px 18px 16px}
 .box::before{content:"";position:absolute;inset:0;border:2.6px solid var(--ink);border-radius:6px 4px 7px 3px;background:#fff;filter:url(#wob)}
 .box>*{position:relative}
-.box h3{font-weight:700;font-size:2.1rem;line-height:1.1}
+.box summary{
+  cursor:pointer;font-weight:700;font-size:2.1rem;line-height:1.15;margin:0 0 2px;
+  list-style:none;padding-right:34px;-webkit-tap-highlight-color:transparent;
+}
+.box[open] summary{margin-bottom:10px}
+.box summary::-webkit-details-marker{display:none}
+.box summary::after{content:"";position:absolute;right:2px;top:8px;width:15px;height:15px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);transition:transform .3s ease}
+.box[open] summary::after{transform:rotate(-135deg);top:12px}
+.box .streak{margin:2px 0 12px}
+[contenteditable="true"]{outline:0;border-bottom:1.5px dashed transparent;cursor:text}
+[contenteditable="true"]:hover,[contenteditable="true"]:focus{border-bottom-color:rgba(18,18,18,.35)}
 .box textarea{
   display:block;width:100%;min-height:96px;margin-top:4px;padding:0;
   border:0;outline:0;resize:none;overflow:hidden;background:
@@ -259,16 +285,19 @@ h1{
 
 .mtable{display:grid}
 .mrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(46px,max-content) minmax(46px,max-content);align-items:baseline;column-gap:10px;padding:7px 0;border-bottom:1.6px solid rgba(18,18,18,.16)}
+.mrow.c3{grid-template-columns:minmax(0,1fr) minmax(36px,max-content) minmax(36px,max-content) minmax(36px,max-content)}
 .mrow:last-child{border-bottom:0}
 .mrow.mhead{padding-bottom:6px;border-bottom:1.6px solid rgba(18,18,18,.32)}
 .mrow.mhead span{font-size:1.05rem;font-weight:700;color:var(--ink-2);letter-spacing:.02em}
-.mrow.mhead span:nth-child(2),.mrow.mhead span:nth-child(3){text-align:right}
+.mrow.mhead span:not(:first-child){text-align:right}
 .mname{font-size:1.42rem;line-height:1.2}
-.mval{font-size:1.42rem;line-height:1.2;text-align:right;white-space:nowrap}
+.mval{font-size:1.42rem;line-height:1.2;text-align:right;white-space:nowrap;min-width:1.4em;display:inline-block}
 .mval.ng{color:var(--ink-2);opacity:.65;font-size:1.15rem}
+.mval:empty::before{content:"\2014";opacity:.3}
 
 .flist{list-style:none;margin:0;padding:0;display:grid;gap:13px}
-.flist li{font-size:1.32rem;line-height:1.38}
+.flist li{display:flex;align-items:flex-start;gap:8px;font-size:1.32rem;line-height:1.38}
+.flist .f-body{flex:1;min-width:0}
 .flist .f-name{font-weight:700;display:block}
 .flist .f-val{display:block;color:var(--ink-2)}
 
@@ -281,9 +310,10 @@ details.day>summary::-webkit-details-marker{display:none}
 details.day>summary::after{content:"";position:absolute;right:3px;top:50%;width:13px;height:13px;margin-top:-10px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);transition:transform .3s ease}
 details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 .exlist{list-style:none;margin:4px 0 6px;padding:0;display:grid;gap:9px}
-.exlist li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:1.3rem;line-height:1.3}
-.ex-name{font-weight:700}
-.ex-spec{color:var(--ink-2);white-space:nowrap}
+.exlist li{display:flex;align-items:flex-start;gap:8px;font-size:1.3rem;line-height:1.3}
+.exlist .ex-body{flex:1;min-width:0}
+.exlist .ex-name{display:block;font-weight:700}
+.exlist .ex-spec{display:block;color:var(--ink-2)}
 
 .checks{list-style:none;padding:0;display:grid;gap:14px}
 .cb{display:flex;align-items:center;gap:16px;width:100%;padding:6px 0;border:0;background:none;text-align:left;cursor:pointer;font-weight:700;font-size:2.3rem;line-height:1.05;-webkit-tap-highlight-color:transparent}
@@ -296,12 +326,98 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 .cb .lbl::after{content:"";position:absolute;left:-3px;right:-3px;top:55%;border-top:3.2px solid var(--ink);transform:scaleX(0) rotate(-1.2deg);transform-origin:left;transition:transform .45s ease .1s}
 .cb[aria-checked="true"] .lbl::after{transform:scaleX(1) rotate(-1.2deg)}
 
+/* life graph */
+.graph{margin-top:28px;max-width:520px}
+.gtitle{font-weight:700;font-size:1.9rem;line-height:1.1;margin-bottom:6px}
+#graphSvg{display:block;width:100%;height:auto;filter:url(#wob)}
+.gline{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
+.graph.go .gline{animation:draw 1.4s cubic-bezier(.3,.7,.2,1) .1s forwards}
+.gfill{fill:rgba(18,18,18,.07);stroke:none;opacity:0;transition:opacity .6s ease .9s}
+.graph.go .gfill{opacity:1}
+.gdot{fill:var(--ink);opacity:0;transition:opacity .4s ease 1.3s}
+.graph.go .gdot{opacity:1}
+.ghint{margin-top:4px;font-size:1.05rem;color:var(--ink-2)}
+
+/* front-page panels */
+.box.panel{margin-top:24px}
+.scroll{max-height:250px;overflow-y:auto;padding-right:6px;margin:0 -6px 0 0}
+
+.edlist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.edlist li{display:flex;align-items:center;gap:8px}
+.edlist .etext{flex:1;min-width:0;font-size:1.42rem;line-height:1.35;padding:2px 0}
+.add{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:0;border:0;background:none;
+  font:700 1.32rem var(--font);color:var(--ink-2);cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.add svg{width:22px;height:22px;flex:none}
+.add path{fill:none;stroke:var(--ink-2);stroke-width:3;stroke-linecap:round}
+.add:hover,.add:focus-visible{color:var(--ink)}
+.del{
+  border:0;background:none;padding:2px 6px;flex:none;cursor:pointer;color:var(--ink-2);
+  font:700 1.3rem/1 var(--font);-webkit-tap-highlight-color:transparent;
+}
+.del:hover,.del:focus-visible{color:var(--ink)}
+.checks.scroll .cb{padding:6px 0}
+
+/* notes */
+.notes-in{position:relative}
+.note-detail[hidden]{display:none}
+.noteslist li{align-items:center}
+.note-row{flex:1;min-width:0;text-align:left;border:0;background:none;padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.note-row:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.nt-title{display:block;font-weight:700;font-size:1.5rem;line-height:1.3}
+.nt-snip{display:block;font-size:1.1rem;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.back.sm{display:none}
+.note-title{
+  display:block;width:100%;margin:6px 0 14px;padding:4px 0;border:0;border-bottom:2.6px solid var(--ink);
+  outline:0;background:none;font:700 2.3rem/1.2 var(--font);color:var(--ink);
+}
+.note-title::placeholder{color:var(--ink-2);opacity:.5}
+.note-body{
+  display:block;width:100%;min-height:45vh;padding:0;border:0;outline:0;resize:none;background:
+    repeating-linear-gradient(to bottom,transparent 0,transparent 31px,rgba(50,50,62,.2) 31px,rgba(50,50,62,.2) 32px);
+  font:500 1.55rem/32px var(--font);color:var(--ink);
+}
+.note-body::placeholder{color:var(--ink-2);opacity:.5}
+.add.warn{color:#a33}
+.add.warn path{stroke:#a33}
+
+.brow{display:flex;align-items:center;gap:12px}
+.brow .bchk{border:0;background:none;padding:0;cursor:pointer;flex:none;-webkit-tap-highlight-color:transparent}
+.brow .bchk svg{width:34px;height:34px;display:block;overflow:visible}
+.brow .bchk .bx{fill:#fff;stroke:var(--ink);stroke-width:2.8;stroke-linejoin:round;stroke-linecap:round}
+.brow .bchk .tk{fill:none;stroke:var(--ink);stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .4s ease}
+.brow .bchk[aria-checked="true"] .tk{stroke-dashoffset:0}
+.brow .lbl{flex:0 1 auto;min-width:4em;max-width:calc(100% - 96px);font-weight:700;font-size:1.9rem;line-height:1.2;position:relative;padding:4px 0}
+.brow::after{content:"";flex:1}
+.brow .del{margin-left:auto}
+.brow .lbl::after{content:"";position:absolute;left:-3px;right:-3px;top:55%;border-top:3.2px solid var(--ink);transform:scaleX(0) rotate(-1.2deg);transform-origin:left;transition:transform .45s ease .1s}
+.brow.done .lbl::after{transform:scaleX(1) rotate(-1.2deg)}
+
+/* password lock */
+.lock{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:#161514;padding:20px}
+.lock[hidden]{display:none}
+.lock-card{width:100%;max-width:320px;text-align:center}
+.lock-title{font:700 3.2rem/1 var(--font);color:#f3ecd9;margin-bottom:20px}
+.lock-input{
+  display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:14px;
+  border:2.4px solid #f3ecd9;border-radius:5px 3px 6px 4px;
+  background:#1c1b19;color:#f3ecd9;font:500 1.3rem var(--font);outline:0;text-align:center;
+}
+.lock-input::placeholder{color:#8a897f}
+.lock-go{
+  display:block;width:100%;padding:11px;border:2.4px solid #f3ecd9;border-radius:5px 3px 6px 4px;
+  background:#f3ecd9;color:#161514;font:700 1.3rem var(--font);cursor:pointer;
+}
+.lock-err{margin-top:12px;color:#e69;font-size:1.05rem}
+.lock-err[hidden]{display:none}
+
 @media (min-width:700px){
   .desk{padding:24px 24px 30px}
-  .stack{min-height:calc(100dvh - 54px)}
   .content{padding:34px 26px 50px 46px}
   .sub .in{padding:34px 30px 56px 50px}
   .back{top:28px;left:40px}
+  .export{top:30px;right:36px}
   .hub{margin:8px 0 0}
 }
 
@@ -400,23 +516,37 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 
     <section class="page sub" id="p-health" role="region" aria-label="Health" inert>
       <button class="back" type="button" aria-label="Turn the page back"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+      <button class="export" type="button" data-export="health" aria-label="Export Health data"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M22 4 V26 M13 18 L22 27 L31 18 M8 33 H36"/></svg></button>
       <div class="in">
         <h2 class="title" tabindex="-1" data-hand>Health</h2>
         <svg class="scrib" viewBox="0 0 300 14" aria-hidden="true"><path pathLength="1" d="M2 8 C40 2 80 12 130 6 S220 4 298 8"/></svg>
         <div class="boxes">
-          <div class="box"><h3 data-hand>Weight / Composition</h3><div class="stat-block" id="comp-rows"></div></div>
-          <div class="box"><h3 data-hand>Circumferences</h3><div class="mtable" id="circ-rows"></div></div>
-          <div class="box"><h3 data-hand>Other</h3><div class="mtable" id="vital-rows"></div></div>
-          <div class="box"><h3 data-hand>Current diet</h3><ul class="flist" id="diet-list"></ul></div>
-          <div class="box"><h3 data-hand>Nutrition</h3><div class="mtable" id="nutri-rows"></div></div>
-          <div class="box"><h3 data-hand>Week 1 Training Log</h3><div class="days" id="training-days"></div></div>
-          <div class="box"><h3 data-hand>Goal</h3><textarea data-key="health-goal" rows="3" aria-label="Goal"></textarea></div>
+          <details class="box"><summary data-hand>Weight / Composition</summary>
+            <div class="line streak" id="comp-streak"><i class="fill"></i></div>
+            <div class="stat-block" id="comp-rows"></div>
+          </details>
+          <details class="box"><summary data-hand>Circumferences</summary>
+            <div class="line streak" id="circ-streak"><i class="fill"></i></div>
+            <div class="mtable" id="circ-rows"></div>
+          </details>
+          <details class="box"><summary data-hand>Other</summary><div class="mtable" id="vital-rows"></div></details>
+          <details class="box"><summary data-hand>Current diet</summary>
+            <ul class="flist" id="diet-list"></ul>
+            <button class="add" type="button" id="diet-add"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add a food</button>
+          </details>
+          <details class="box"><summary data-hand>Nutrition</summary>
+            <div class="line streak" id="nutri-streak"><i class="fill"></i></div>
+            <div class="mtable" id="nutri-rows"></div>
+          </details>
+          <details class="box"><summary data-hand>Week 1 Training Log</summary><div class="days" id="training-days"></div></details>
+          <details class="box"><summary data-hand>Goal</summary><textarea data-key="health-goal" rows="3" aria-label="Goal"></textarea></details>
         </div>
       </div>
     </section>
 
     <section class="page sub" id="p-relationships" role="region" aria-label="Relationships" inert>
       <button class="back" type="button" aria-label="Turn the page back"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+      <button class="export" type="button" data-export="relationships" aria-label="Export Relationships data"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M22 4 V26 M13 18 L22 27 L31 18 M8 33 H36"/></svg></button>
       <div class="in">
         <h2 class="title" tabindex="-1" data-hand>Relationships</h2>
         <svg class="scrib" viewBox="0 0 300 14" aria-hidden="true"><path pathLength="1" d="M2 8 C40 2 80 12 130 6 S220 4 298 8"/></svg>
@@ -428,6 +558,7 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 
     <section class="page sub" id="p-spirituality" role="region" aria-label="Spirituality" inert>
       <button class="back" type="button" aria-label="Turn the page back"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+      <button class="export" type="button" data-export="spirituality" aria-label="Export Spirituality data"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M22 4 V26 M13 18 L22 27 L31 18 M8 33 H36"/></svg></button>
       <div class="in">
         <h2 class="title" tabindex="-1" data-hand>Spirituality</h2>
         <svg class="scrib" viewBox="0 0 300 14" aria-hidden="true"><path pathLength="1" d="M2 8 C40 2 80 12 130 6 S220 4 298 8"/></svg>
@@ -439,10 +570,29 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 
     <section class="page sub" id="p-finance" role="region" aria-label="Finance" inert>
       <button class="back" type="button" aria-label="Turn the page back"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+      <button class="export" type="button" data-export="finance" aria-label="Export Finance data"><svg viewBox="0 0 44 40" aria-hidden="true"><path d="M22 4 V26 M13 18 L22 27 L31 18 M8 33 H36"/></svg></button>
       <div class="in">
         <h2 class="title" tabindex="-1" data-hand>Finance</h2>
         <svg class="scrib" viewBox="0 0 300 14" aria-hidden="true"><path pathLength="1" d="M2 8 C40 2 80 12 130 6 S220 4 298 8"/></svg>
         <div id="fin-lines"></div>
+      </div>
+    </section>
+
+    <section class="page sub" id="p-notes" role="region" aria-label="Notes" inert>
+      <button class="back" type="button" aria-label="Turn the page back"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+      <div class="in notes-in">
+        <div class="idx" id="notes-index">
+          <h2 class="title" tabindex="-1" data-hand>Notes</h2>
+          <svg class="scrib" viewBox="0 0 300 14" aria-hidden="true"><path pathLength="1" d="M2 8 C40 2 80 12 130 6 S220 4 298 8"/></svg>
+          <ul class="edlist noteslist" id="notes-list"></ul>
+          <button class="add" type="button" id="notes-add"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>New note</button>
+        </div>
+        <div class="note-detail" id="notes-detail" hidden>
+          <button class="back sm" type="button" id="notes-back" aria-label="Back to the index"><svg viewBox="0 0 52 46" aria-hidden="true"><path d="M46 23 H8 M20 9 L7 23 L20 37"/></svg></button>
+          <input class="note-title" id="note-title" type="text" placeholder="Title" aria-label="Note title">
+          <textarea class="note-body" id="note-body" placeholder="Write here..." aria-label="Note"></textarea>
+          <button class="add del-note" type="button" id="notes-delete"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2M6 6l1 12h6l1-12"/></svg>Delete this note</button>
+        </div>
       </div>
     </section>
 
@@ -474,20 +624,29 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 
           <div class="content">
             <header class="top">
-              <button class="mini" id="mini" type="button" aria-expanded="false" aria-label="Open the window to see the days left">
+              <button class="mini" id="mini" type="button" aria-expanded="false" aria-label="Open the window to see the weeks left">
                 <span class="tape t1"></span><span class="tape t2"></span>
                 <span class="win" id="miniWin">
                   <span class="opening" data-scene>
                     <span class="num">
-                      <span class="odo" id="odo" role="img" aria-label="days left"></span>
-                      <span class="unit">days left</span>
-                      <span class="of" id="of">out of 365</span>
+                      <span class="odo" id="odo" role="img" aria-label="weeks left"></span>
+                      <span class="unit">weeks left</span>
+                      <span class="of" id="of">out of 53</span>
                     </span>
                   </span>
                   <span class="sash l"></span><span class="sash r"></span>
                 </span>
                 <span class="sill"><i class="bk b1"></i><i class="bk b2"></i><i class="cup"><b></b><b></b><b></b></i></span>
               </button>
+              <div class="tabs">
+                <button class="tab" id="notesBtn" type="button" aria-label="Open Notes">
+                  <svg class="ic" viewBox="0 0 28 28" aria-hidden="true"><path d="M6 4h13l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M19 4v5h5"/><path d="M9 14h10M9 18h7"/></svg>
+                  <span data-hand>Notes</span>
+                </button>
+                <button class="tab padlock" id="lockBtn" type="button" aria-label="Set or change a password">
+                  <svg class="ic" viewBox="0 0 28 28" aria-hidden="true"><rect x="7" y="13" width="14" height="11" rx="2"/><path d="M10 13v-4a4 4 0 0 1 8 0v4"/></svg>
+                </button>
+              </div>
             </header>
 
             <h1 data-hand>Nothing will change if you change nothing.</h1>
@@ -532,6 +691,28 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
             </figure>
 
             <section class="loan" id="loan"></section>
+
+            <section class="graph" id="lifeGraph" aria-label="How things are trending">
+              <p class="gtitle" data-hand>How it's going</p>
+              <svg viewBox="0 0 320 108" id="graphSvg" preserveAspectRatio="none" aria-hidden="true">
+                <path id="graphFillPath" class="gfill"/>
+                <path id="graphLinePath" class="gline"/>
+                <circle id="graphDot" class="gdot" r="4"/>
+              </svg>
+              <p class="ghint">Fills in day by day as you keep using this page.</p>
+            </section>
+
+            <div class="box panel">
+              <h3 data-hand>Projects</h3>
+              <ul class="edlist scroll" id="projects-list"></ul>
+              <button class="add" type="button" id="projects-add"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add a project</button>
+            </div>
+
+            <div class="box panel">
+              <h3 data-hand>Bucket list</h3>
+              <ul class="edlist scroll" id="bucket-list"></ul>
+              <button class="add" type="button" id="bucket-add"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add one</button>
+            </div>
           </div>
         </div>
         <i class="shade"></i>
@@ -544,6 +725,15 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
     </div>
 
   </main>
+</div>
+
+<div class="lock" id="lockScreen" hidden>
+  <div class="lock-card">
+    <p class="lock-title" data-hand>Locked</p>
+    <input class="lock-input" id="lockInput" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="lock-go" id="lockGo" type="button">Unlock</button>
+    <p class="lock-err" id="lockErr" hidden>That's not it — try again.</p>
+  </div>
 </div>
 
 <template id="scene-tpl">
@@ -599,8 +789,6 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 </template>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 (function () {
   'use strict';
 
@@ -617,23 +805,23 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
         { day: "Goal", stats: ["Weight 72.5 kg", "Body Fat 10%", "Muscle 75-80%", "Bone 4-5%", "BMI 24.9"] }
       ],
       circumference: [
-        ["Shoulder", "47.6\"", "NG"],
-        ["Chest", "41.0\"", "38\""],
-        ["Waist", "30.0\"", "33\""],
-        ["Hip", "35.9\"", "37\""],
-        ["Neck", "15.0\"", "14.5\""],
-        ["Right Bicep", "14.6\"", "14.5\""],
-        ["Left Bicep", "14.6\"", "14.1\""],
-        ["Forearm", "12.1\"", "10.5\""],
-        ["Wrist", "6.6\"", "NG"],
-        ["Thigh", "21.9\"", "18.5\""],
-        ["Calf", "14.6\"", "13.4\""],
-        ["Wingspan", "70.7\"", "NG"]
+        ["Shoulder", "47.6\"", "NG", ""],
+        ["Chest", "41.0\"", "38\"", ""],
+        ["Waist", "30.0\"", "33\"", ""],
+        ["Hip", "35.9\"", "37\"", ""],
+        ["Neck", "15.0\"", "14.5\"", ""],
+        ["Right Bicep", "14.6\"", "14.5\"", ""],
+        ["Left Bicep", "14.6\"", "14.1\"", ""],
+        ["Forearm", "12.1\"", "10.5\"", ""],
+        ["Wrist", "6.6\"", "NG", ""],
+        ["Thigh", "21.9\"", "18.5\"", ""],
+        ["Calf", "14.6\"", "13.4\"", ""],
+        ["Wingspan", "70.7\"", "NG", ""]
       ],
       vitals: [
-        ["Resting Heart Rate", "55 bpm", "NG"],
-        ["Blood Pressure", "115/75 mmHg", "NG"],
-        ["Lung Capacity", "6.5 L", "NG"]
+        ["Resting Heart Rate", "55 bpm", "NG", ""],
+        ["Blood Pressure", "115/75 mmHg", "NG", ""],
+        ["Lung Capacity", "6.5 L", "NG", ""]
       ],
       diet: [
         ["Eggs", "4 whole"],
@@ -731,7 +919,9 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
         ] },
         { day: "Day 7", split: "Rest", ex: [] }
       ]
-    }
+    },
+    bucketSeed: ["USA", "Spain", "First Flight", "Goa", "Dubai", "Read Book", "Laptop", "iPhone", "First Car"],
+    dreamWords: ["Seoul", "Canada", "UK", "Space", "Restaurant", "Assets \u20AC1 billion", "Hong Kong", "LA", "Family", "Love", "Peace", "Singer", "Ukelele", "Helicopter", "YouTuber", "Espa\u00F1ol A2", "Canary Islands"]
   };
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -757,24 +947,24 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
   // Firestore rules you paste in the Firebase console (see the rules
   // snippet in the reply that came with this file).
   var FIREBASE_CONFIG = {
-    apiKey: "AIzaSyAZUuo6TZ8DDP3ZiFVVxUtC4H4hzCOOBeU",
-  authDomain: "now-manifest.firebaseapp.com",
-  projectId: "now-manifest",
-  storageBucket: "now-manifest.firebasestorage.app",
-  messagingSenderId: "962695600765",
-  appId: "1:962695600765:web:6f64f1c61961dcac54af14"
+    apiKey: "PASTE_YOUR_API_KEY",
+    authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+    projectId: "PASTE_YOUR_PROJECT_ID",
+    storageBucket: "PASTE_YOUR_PROJECT.appspot.com",
+    messagingSenderId: "PASTE_YOUR_SENDER_ID",
+    appId: "PASTE_YOUR_APP_ID"
   };
   // ==========================================================
 
-  var cloud = { ref: null, state: {}, ready: false, applying: false };
+  var cloud = { ref: null, state: {}, ready: false, applying: false, setDoc: null };
   var cloudTimer = null;
   function queueCloudSave() {
-    if (!cloud.ready || !cloud.ref) return;
+    if (!cloud.ready || !cloud.ref || !cloud.setDoc) return;
     clearTimeout(cloudTimer);
     cloudTimer = setTimeout(function () {
       var body = {};
       for (var k in cloud.state) if (Object.prototype.hasOwnProperty.call(cloud.state, k)) body[k] = cloud.state[k];
-      setDoc(cloud.ref, body).catch(function () {});
+      cloud.setDoc(cloud.ref, body).catch(function () {});
     }, 700);
   }
   function applyCloudToUI() {
@@ -793,22 +983,34 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
       }
     });
     cloud.applying = false;
+    applyCloudExtras();
   }
   (function initCloud() {
     if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey.indexOf('PASTE_') === 0) {
       console.warn('NOW: Firebase is not configured yet, so notes are only saving to this browser. Fill in FIREBASE_CONFIG near the top of the script.');
       return;
     }
-    try {
+    // Dynamic imports: if the CDN can't be reached (offline, a blocked
+    // domain, no network), this fails quietly and the rest of the page
+    // keeps working with the local-only fallback -- a static top-level
+    // import would instead take the whole page down.
+    Promise.all([
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js')
+    ]).then(function (mods) {
+      var initializeApp = mods[0].initializeApp;
+      var getFirestore = mods[1].getFirestore, doc = mods[1].doc, onSnapshot = mods[1].onSnapshot;
+      cloud.setDoc = mods[1].setDoc;
       var app = initializeApp(FIREBASE_CONFIG);
       var firestore = getFirestore(app);
       cloud.ref = doc(firestore, 'now', 'state');
       onSnapshot(cloud.ref, function (snap) {
-        cloud.state = (snap.exists() && snap.data()) || {};
+        var incoming = (snap.exists() && snap.data()) || {};
+        for (var k in incoming) if (Object.prototype.hasOwnProperty.call(incoming, k)) cloud.state[k] = incoming[k];
         cloud.ready = true;
         applyCloudToUI();
       }, function (err) { console.warn('NOW: cloud sync error', err); });
-    } catch (e) { console.warn('NOW: Firebase failed to start', e); }
+    }).catch(function (e) { console.warn('NOW: Firebase failed to load -- saving to this browser only.', e); });
   })();
 
   var seed = 20260920;
@@ -868,6 +1070,8 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
   var targetUTC = Date.UTC(+sp[0], +sp[1] - 1, +sp[2]) + total * DAY;
   function todayUTC() { var d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); }
   function daysLeft() { return Math.max(0, Math.min(total, Math.round((targetUTC - todayUTC()) / DAY))); }
+  var totalWeeks = Math.ceil(total / 7);
+  function weeksLeft() { return Math.min(totalWeeks, Math.ceil(daysLeft() / 7)); }
 
   function placeSun() {
     var dy = -(178 * (total - daysLeft()) / total);
@@ -877,7 +1081,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
   }
 
   var odo = $('odo');
-  $('of').textContent = 'out of ' + total;
+  $('of').textContent = 'out of ' + totalWeeks;
   function buildOdo(n) {
     var s = String(n);
     odo.textContent = '';
@@ -890,14 +1094,14 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
     }
   }
   function resetOdo() {
-    var n = daysLeft();
+    var n = weeksLeft();
     buildOdo(n);
-    odo.setAttribute('aria-label', n + (n === 1 ? ' day left' : ' days left') + ', out of ' + total);
+    odo.setAttribute('aria-label', n + (n === 1 ? ' week left' : ' weeks left') + ', out of ' + totalWeeks);
     placeSun();
     void odo.offsetWidth;
   }
   function runOdo(animate) {
-    var s = String(daysLeft());
+    var s = String(weeksLeft());
     for (var i = 0; i < s.length; i++) {
       var col = odo.children[i].firstChild;
       col.style.transition = animate ? '' : 'none';
@@ -947,32 +1151,196 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
   fin.appendChild(tracker({ label: 'First ' + c.goal + ' clients', top: String(c.goal), pct: c.done / c.goal * 100, segments: c.goal, left: c.done + ' done', right: (c.goal - c.done) + ' to go' }));
   fin.appendChild(tracker({ label: 'Spanish A1 to A2', top: '', pct: 100 - sLeft, segments: 4, left: (100 - sLeft) + '% done', right: sLeft + '% left' }));
 
+  function parseNum(s) {
+    if (!s) return NaN;
+    var m = String(s).match(/-?\d+(?:\.\d+)?/g);
+    if (!m) return NaN;
+    if (m.length >= 2) return (parseFloat(m[0]) + parseFloat(m[1])) / 2;
+    return parseFloat(m[0]);
+  }
+  function clamp01(n) { return Math.max(0, Math.min(1, n)); }
+  function cleanText(el) {
+    if (!el) return '';
+    var sr = el.querySelector && el.querySelector('.sr');
+    return (sr ? sr.textContent : el.textContent).trim();
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function avg(list) { return list.length ? list.reduce(function (a, b) { return a + b; }, 0) / list.length : 0; }
+
+  var saveTimers = {};
+  var lastRendered = {};
+  function debounceSave(key, getter) {
+    clearTimeout(saveTimers[key]);
+    saveTimers[key] = setTimeout(function () {
+      var data = getter();
+      cloud.state[key] = data;
+      lastRendered[key] = JSON.stringify(data);
+      queueCloudSave();
+    }, 500);
+  }
+  function shouldSkipRender(key, data) {
+    var json = JSON.stringify(data);
+    if (lastRendered[key] === json) return true;
+    lastRendered[key] = json;
+    return false;
+  }
+
+  function exportJSON(filename, data) {
+    try {
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    } catch (e) {}
+  }
+
+  /* ---------- Composition ---------- */
   function renderComposition(rows, host) {
+    host.innerHTML = '';
     rows.forEach(function (row) {
       var r = document.createElement('div'); r.className = 'stat-row';
       var who = document.createElement('p'); who.className = 'who'; who.setAttribute('data-hand', ''); who.textContent = row.day;
-      var vals = document.createElement('p'); vals.className = 'vals'; vals.textContent = row.stats.join('   \u00B7   ');
+      var vals = document.createElement('p'); vals.className = 'vals'; vals.contentEditable = 'true';
+      vals.textContent = row.stats.join('   \u00B7   ');
       r.appendChild(who); r.appendChild(vals);
       host.appendChild(r);
       hand(who);
     });
   }
+  function readComposition(host) {
+    var rows = [];
+    Array.prototype.forEach.call(host.querySelectorAll('.stat-row'), function (r) {
+      var day = cleanText(r.querySelector('.who'));
+      var stats = r.querySelector('.vals').textContent.split('\u00B7').map(function (s) { return s.trim(); }).filter(Boolean);
+      rows.push({ day: day, stats: stats });
+    });
+    return rows;
+  }
+  function wireComposition(host) {
+    Array.prototype.forEach.call(host.querySelectorAll('.vals'), function (v) {
+      v.addEventListener('input', function () {
+        if (cloud.applying) return;
+        debounceSave('fit.composition', function () { return readComposition(host); });
+        updateCompStreak(); recordScoreIfNeeded();
+      });
+    });
+  }
+  function updateCompStreak() {
+    var rows = readComposition($('comp-rows'));
+    if (rows.length < 3) { lastCompStreak = 0; setStreak('comp-streak', 0); return; }
+    function toMap(list) {
+      var map = {};
+      list.forEach(function (s) {
+        var m = s.match(/^([^\d]+?)\s*-?[\d.]/);
+        var label = (m ? m[1] : s).trim();
+        if (label) map[label] = parseNum(s);
+      });
+      return map;
+    }
+    var bm = toMap(rows[0].stats), cm = toMap(rows[1].stats), gm = toMap(rows[rows.length - 1].stats);
+    var vals = [];
+    Object.keys(gm).forEach(function (k) {
+      if (!(k in bm) || !(k in cm)) return;
+      var b = bm[k], c = cm[k], g = gm[k];
+      if (isNaN(b) || isNaN(g) || isNaN(c)) return;
+      var span = Math.abs(g - b);
+      vals.push(span < 1e-9 ? (Math.abs(c - g) < 1e-9 ? 1 : 0) : clamp01(1 - Math.abs(c - g) / span));
+    });
+    lastCompStreak = avg(vals);
+    setStreak('comp-streak', lastCompStreak);
+  }
+
+  /* ---------- Measurement tables (circumference / vitals / nutrition) ---------- */
   function renderMTable(rows, host, cols) {
-    var head = document.createElement('div'); head.className = 'mrow mhead';
+    host.innerHTML = '';
+    var head = document.createElement('div'); head.className = 'mrow mhead' + (cols.length > 3 ? ' c3' : '');
     cols.forEach(function (c) { var s = document.createElement('span'); s.textContent = c; head.appendChild(s); });
     host.appendChild(head);
     rows.forEach(function (row) {
-      var r = document.createElement('div'); r.className = 'mrow';
+      var r = document.createElement('div'); r.className = 'mrow' + (cols.length > 3 ? ' c3' : '');
       var name = document.createElement('span'); name.className = 'mname'; name.setAttribute('data-hand', ''); name.textContent = row[0];
-      var goalv = document.createElement('span'); goalv.className = 'mval'; goalv.textContent = row[1];
-      var basev = document.createElement('span'); basev.className = 'mval' + (row[2] === 'NG' ? ' ng' : ''); basev.textContent = row[2];
-      r.appendChild(name); r.appendChild(goalv); r.appendChild(basev);
+      r.appendChild(name);
+      for (var i = 1; i < cols.length; i++) {
+        var val = document.createElement('span');
+        val.className = 'mval' + (row[i] === 'NG' ? ' ng' : '');
+        val.contentEditable = 'true';
+        val.textContent = row[i] == null ? '' : row[i];
+        r.appendChild(val);
+      }
       host.appendChild(r);
       hand(name);
     });
   }
+  function readMTable(host) {
+    var rows = [];
+    Array.prototype.forEach.call(host.querySelectorAll('.mrow:not(.mhead)'), function (r) {
+      var name = cleanText(r.querySelector('.mname'));
+      var vals = Array.prototype.map.call(r.querySelectorAll('.mval'), function (v) { return v.textContent.trim(); });
+      rows.push([name].concat(vals));
+    });
+    return rows;
+  }
+  function wireMTable(host, key, streakFn) {
+    Array.prototype.forEach.call(host.querySelectorAll('.mval'), function (v) {
+      v.addEventListener('input', function () {
+        if (cloud.applying) return;
+        v.classList.toggle('ng', false);
+        debounceSave(key, function () { return readMTable(host); });
+        if (streakFn) streakFn();
+        recordScoreIfNeeded();
+      });
+    });
+  }
+  function updateCircStreak() {
+    var rows = readMTable($('circ-rows'));
+    var vals = [];
+    rows.forEach(function (r) {
+      var g = parseNum(r[1]), b = parseNum(r[2]), c = parseNum(r[3]);
+      if (isNaN(g) || isNaN(b)) return;
+      var span = Math.abs(g - b);
+      vals.push(isNaN(c) ? 0 : (span < 1e-9 ? (Math.abs(c - g) < 1e-9 ? 1 : 0) : clamp01(1 - Math.abs(c - g) / span)));
+    });
+    lastCircStreak = avg(vals);
+    setStreak('circ-streak', lastCircStreak);
+  }
+  function updateNutriStreak() {
+    var rows = readMTable($('nutri-rows'));
+    var vals = [];
+    rows.forEach(function (r) {
+      var rec = parseNum(r[1]), cur = parseNum(r[2]);
+      if (isNaN(rec) || isNaN(cur) || rec === 0) return;
+      vals.push(clamp01(cur / rec));
+    });
+    lastNutriStreak = avg(vals);
+    setStreak('nutri-streak', lastNutriStreak);
+  }
+  var lastCompStreak = 0, lastCircStreak = 0, lastNutriStreak = 0;
+  function setStreak(id, ratio) {
+    var el = $(id); if (!el) return;
+    var fill = el.querySelector('.fill'); if (!fill) return;
+    fill.style.width = Math.round(clamp01(ratio) * 100) + '%';
+  }
+
+  /* ---------- Training log (view-only) ---------- */
+  function buildExerciseRow(dayId, name, spec) {
+    var li = document.createElement('li');
+    var body = document.createElement('div'); body.className = 'ex-body';
+    var nm = document.createElement('span'); nm.className = 'ex-name'; nm.contentEditable = 'true'; nm.textContent = name || '';
+    var sp = document.createElement('span'); sp.className = 'ex-spec'; sp.contentEditable = 'true'; sp.textContent = spec || '';
+    body.appendChild(nm); body.appendChild(sp);
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove exercise'); del.textContent = '\u00D7';
+    li.appendChild(body); li.appendChild(del);
+    var save = function () { if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); }); };
+    nm.addEventListener('input', save);
+    sp.addEventListener('input', save);
+    del.addEventListener('click', function () { li.remove(); save(); });
+    return li;
+  }
   function renderTraining(days, host) {
-    days.forEach(function (d) {
+    host.innerHTML = '';
+    days.forEach(function (d, di) {
       if (!d.ex.length) {
         var p = document.createElement('p'); p.className = 'rest'; p.setAttribute('data-hand', '');
         p.textContent = d.day + ' \u2014 ' + d.split;
@@ -984,36 +1352,77 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
       sum.textContent = d.day + ' \u2014 ' + d.split;
       det.appendChild(sum);
       var ul = document.createElement('ul'); ul.className = 'exlist';
-      d.ex.forEach(function (pair) {
-        var li = document.createElement('li');
-        var nm = document.createElement('span'); nm.className = 'ex-name'; nm.setAttribute('data-hand', ''); nm.textContent = pair[0];
-        var sp = document.createElement('span'); sp.className = 'ex-spec'; sp.textContent = pair[1];
-        li.appendChild(nm); li.appendChild(sp);
-        ul.appendChild(li);
-        hand(nm);
-      });
+      d.ex.forEach(function (pair) { ul.appendChild(buildExerciseRow(di, pair[0], pair[1])); });
       det.appendChild(ul);
+      var add = document.createElement('button'); add.type = 'button'; add.className = 'add';
+      add.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add exercise';
+      add.addEventListener('click', function () {
+        var row = buildExerciseRow(di, '', '');
+        ul.appendChild(row);
+        if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); });
+        row.querySelector('.ex-name').focus();
+      });
+      det.appendChild(add);
       host.appendChild(det);
       hand(sum);
     });
   }
-  function renderFList(rows, host) {
-    rows.forEach(function (row) {
-      var li = document.createElement('li');
-      var nm = document.createElement('span'); nm.className = 'f-name'; nm.setAttribute('data-hand', ''); nm.textContent = row[0];
-      var vl = document.createElement('span'); vl.className = 'f-val'; vl.textContent = row[1];
-      li.appendChild(nm); li.appendChild(vl);
-      host.appendChild(li);
-      hand(nm);
+  function readTraining(host) {
+    var days = [];
+    Array.prototype.forEach.call(host.children, function (el) {
+      if (el.tagName === 'P') { days.push({ day: cleanText(el), split: '', ex: [] }); return; }
+      var head = cleanText(el.querySelector('summary')).split('\u2014');
+      var ex = [];
+      Array.prototype.forEach.call(el.querySelectorAll('.exlist li'), function (li) {
+        ex.push([li.querySelector('.ex-name').textContent.trim(), li.querySelector('.ex-spec').textContent.trim()]);
+      });
+      days.push({ day: (head[0] || '').trim(), split: (head[1] || '').trim(), ex: ex });
     });
+    return days;
+  }
+
+  /* ---------- Diet (addable / editable / deletable) ---------- */
+  function buildDietRow(name, val) {
+    var li = document.createElement('li');
+    var body = document.createElement('div'); body.className = 'f-body';
+    var nm = document.createElement('span'); nm.className = 'f-name'; nm.contentEditable = 'true'; nm.textContent = name || '';
+    var vl = document.createElement('span'); vl.className = 'f-val'; vl.contentEditable = 'true'; vl.textContent = val || '';
+    body.appendChild(nm); body.appendChild(vl);
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove item'); del.textContent = '\u00D7';
+    li.appendChild(body); li.appendChild(del);
+    var save = function () { if (!cloud.applying) debounceSave('fit.diet', function () { return readFList($('diet-list')); }); };
+    nm.addEventListener('input', save);
+    vl.addEventListener('input', save);
+    del.addEventListener('click', function () { li.remove(); save(); });
+    return li;
+  }
+  function renderFList(rows, host) {
+    host.innerHTML = '';
+    rows.forEach(function (row) { host.appendChild(buildDietRow(row[0], row[1])); });
+  }
+  function readFList(host) {
+    var rows = [];
+    Array.prototype.forEach.call(host.querySelectorAll('li'), function (li) {
+      var n = li.querySelector('.f-name'), v = li.querySelector('.f-val');
+      if (n) rows.push([n.textContent.trim(), v ? v.textContent.trim() : '']);
+    });
+    return rows;
   }
   var fitCfg = CONFIG.fitness;
-  renderComposition(fitCfg.composition, $('comp-rows'));
-  renderMTable(fitCfg.circumference, $('circ-rows'), ['Measurement', 'Goal', 'Baseline']);
-  renderMTable(fitCfg.vitals, $('vital-rows'), ['', 'Goal', 'Baseline']);
+  renderComposition(fitCfg.composition, $('comp-rows')); wireComposition($('comp-rows'));
+  renderMTable(fitCfg.circumference, $('circ-rows'), ['Measurement', 'Goal', 'Baseline', 'Current']); wireMTable($('circ-rows'), 'fit.circumference', updateCircStreak);
+  renderMTable(fitCfg.vitals, $('vital-rows'), ['', 'Goal', 'Baseline', 'Current']); wireMTable($('vital-rows'), 'fit.vitals', null);
   renderFList(fitCfg.diet, $('diet-list'));
-  renderMTable(fitCfg.nutrition, $('nutri-rows'), ['Nutrient', 'Recommended', 'Current']);
+  renderMTable(fitCfg.nutrition, $('nutri-rows'), ['Nutrient', 'Recommended', 'Current']); wireMTable($('nutri-rows'), 'fit.nutrition', updateNutriStreak);
   renderTraining(fitCfg.training, $('training-days'));
+  updateCompStreak(); updateCircStreak(); updateNutriStreak();
+
+  $('diet-add').addEventListener('click', function () {
+    var host = $('diet-list');
+    host.appendChild(buildDietRow('', ''));
+    debounceSave('fit.diet', function () { return readFList(host); });
+    var last = host.lastElementChild; if (last) last.querySelector('.f-name').focus();
+  });
 
   Array.prototype.forEach.call(document.querySelectorAll('.box textarea'), function (ta) {
     var dataKey = ta.getAttribute('data-key');
@@ -1035,8 +1444,321 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
       b.setAttribute('aria-checked', on ? 'true' : 'false');
       store.set(key, on ? '1' : '0');
       if (!cloud.applying) { cloud.state[key] = on; queueCloudSave(); }
+      recordScoreIfNeeded();
     });
   });
+
+  /* ---------- Export ---------- */
+  function exportSection(name) {
+    var data = {}, stamp = new Date().toISOString().slice(0, 10);
+    if (name === 'health') {
+      data = {
+        composition: readComposition($('comp-rows')),
+        circumference: readMTable($('circ-rows')),
+        vitals: readMTable($('vital-rows')),
+        diet: readFList($('diet-list')),
+        nutrition: readMTable($('nutri-rows')),
+        training: readTraining($('training-days')),
+        goal: (document.querySelector('textarea[data-key="health-goal"]') || {}).value || ''
+      };
+    } else if (name === 'relationships' || name === 'spirituality') {
+      data.checklist = [];
+      Array.prototype.forEach.call($('p-' + name).querySelectorAll('.cb'), function (b) {
+        data.checklist.push({ item: cleanText(b.querySelector('.lbl')), done: b.getAttribute('aria-checked') === 'true' });
+      });
+    } else if (name === 'finance') {
+      data.lines = [];
+      Array.prototype.forEach.call($('fin-lines').querySelectorAll('.tracker'), function (tr) {
+        data.lines.push({
+          label: cleanText(tr.querySelector('.t-name')),
+          total: (tr.querySelector('.t-total') || {}).textContent || '',
+          percent: tr.style.getPropertyValue('--p'),
+          left: (tr.querySelector('.paid') || {}).textContent || '',
+          right: (tr.querySelector('.pend') || {}).textContent || ''
+        });
+      });
+    }
+    exportJSON('now-' + name + '-' + stamp + '.json', data);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.export'), function (btn) {
+    btn.addEventListener('click', function () { exportSection(btn.getAttribute('data-export')); });
+  });
+
+  /* ---------- Life graph ---------- */
+  function computeLifeScore() {
+    var parts = [paid / g.total, CONFIG.invest.pct / 100, c.done / c.goal, (100 - sLeft) / 100, lastCompStreak, lastCircStreak, lastNutriStreak];
+    var boxes = document.querySelectorAll('.cb[data-key^="chk-"]'), total = 0, on = 0;
+    Array.prototype.forEach.call(boxes, function (b) { total++; if (b.getAttribute('aria-checked') === 'true') on++; });
+    if (total) parts.push(on / total);
+    return Math.round(clamp01(avg(parts)) * 100);
+  }
+  function drawGraph(hist) {
+    var svg = $('graphSvg'), fillPath = $('graphFillPath'), linePath = $('graphLinePath'), dot = $('graphDot');
+    if (!svg) return;
+    var W = 320, H = 108, pad = 8;
+    var pts = hist && hist.length ? hist : [{ d: '', s: 0 }];
+    var n = pts.length;
+    var coords = pts.map(function (p, i) {
+      var x = n > 1 ? pad + (W - 2 * pad) * i / (n - 1) : pad;
+      var y = H - pad - (clamp01(p.s / 100)) * (H - 2 * pad);
+      return [x, y];
+    });
+    if (n === 1) coords = [[pad, coords[0][1]], [W - pad, coords[0][1]]];
+    var d = 'M' + coords.map(function (c) { return c[0].toFixed(1) + ' ' + c[1].toFixed(1); }).join(' L');
+    linePath.setAttribute('d', d);
+    var last = coords[coords.length - 1], first = coords[0];
+    linePath.setAttribute('pathLength', '1');
+    linePath.setAttribute('stroke-dasharray', '1');
+    fillPath.setAttribute('d', d + ' L' + last[0].toFixed(1) + ' ' + (H - pad) + ' L' + first[0].toFixed(1) + ' ' + (H - pad) + ' Z');
+    dot.setAttribute('cx', last[0].toFixed(1)); dot.setAttribute('cy', last[1].toFixed(1));
+    var box = $('lifeGraph'); if (box) { box.classList.remove('go'); void box.offsetWidth; box.classList.add('go'); }
+  }
+  function recordScoreIfNeeded() {
+    if (!cloud.ready) return;
+    var today = new Date().toISOString().slice(0, 10);
+    var hist = (cloud.state.history || []).slice();
+    var score = computeLifeScore();
+    var last = hist[hist.length - 1];
+    if (last && last.d === today) {
+      if (last.s === score) { drawGraph(hist); return; }
+      last.s = score;
+    } else {
+      hist.push({ d: today, s: score });
+    }
+    if (hist.length > 180) hist = hist.slice(-180);
+    cloud.state.history = hist;
+    queueCloudSave();
+    drawGraph(hist);
+  }
+
+  /* ---------- Notes ---------- */
+  var notesListEl = $('notes-list'), notesIndexEl = $('notes-index'), notesDetailEl = $('notes-detail');
+  var noteTitleEl = $('note-title'), noteBodyEl = $('note-body'), currentNoteId = null, noteSaveTimer = null;
+  function notesGet() { return (cloud.state.notes || []).slice(); }
+  function notesSave(list) { cloud.state.notes = list; lastRendered.notes = JSON.stringify(list); queueCloudSave(); }
+  function renderNotesIndex() {
+    notesListEl.innerHTML = '';
+    notesGet().forEach(function (note) {
+      var li = document.createElement('li');
+      var row = document.createElement('button'); row.type = 'button'; row.className = 'note-row';
+      var t = document.createElement('span'); t.className = 'nt-title'; t.textContent = note.title || 'Untitled';
+      var s = document.createElement('span'); s.className = 'nt-snip'; s.textContent = (note.body || '').slice(0, 70);
+      row.appendChild(t); row.appendChild(s);
+      row.addEventListener('click', function () { openNote(note.id); });
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Delete note'); del.textContent = '\u00D7';
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('Delete this note?')) return;
+        notesSave(notesGet().filter(function (n) { return n.id !== note.id; }));
+        renderNotesIndex();
+      });
+      li.appendChild(row); li.appendChild(del);
+      notesListEl.appendChild(li);
+    });
+  }
+  function openNote(id) {
+    var note = notesGet().filter(function (n) { return n.id === id; })[0];
+    if (!note) return;
+    currentNoteId = id;
+    noteTitleEl.value = note.title || '';
+    noteBodyEl.value = note.body || '';
+    notesIndexEl.hidden = true; notesDetailEl.hidden = false;
+    noteTitleEl.focus();
+  }
+  function closeNote() {
+    currentNoteId = null;
+    notesDetailEl.hidden = true; notesIndexEl.hidden = false;
+    renderNotesIndex();
+  }
+  function saveCurrentNote() {
+    if (!currentNoteId) return;
+    var list = notesGet(), note = list.filter(function (n) { return n.id === currentNoteId; })[0];
+    if (!note) return;
+    note.title = noteTitleEl.value; note.body = noteBodyEl.value;
+    notesSave(list);
+  }
+  $('notes-add').addEventListener('click', function () {
+    var list = notesGet(), note = { id: uid(), title: '', body: '' };
+    list.unshift(note); notesSave(list); openNote(note.id);
+  });
+  $('notes-back').addEventListener('click', closeNote);
+  noteTitleEl.addEventListener('input', function () { clearTimeout(noteSaveTimer); noteSaveTimer = setTimeout(saveCurrentNote, 400); });
+  noteBodyEl.addEventListener('input', function () { clearTimeout(noteSaveTimer); noteSaveTimer = setTimeout(saveCurrentNote, 400); });
+  $('notes-delete').addEventListener('click', function () {
+    if (!currentNoteId) return;
+    if (!confirm('Delete this note?')) return;
+    notesSave(notesGet().filter(function (n) { return n.id !== currentNoteId; }));
+    closeNote();
+  });
+  $('notesBtn').addEventListener('click', function () { go('notes'); });
+
+  /* ---------- Projects ---------- */
+  var projectsListEl = $('projects-list');
+  function projectsGet() { return (cloud.state.projects || []).slice(); }
+  function projectsSave(list) { cloud.state.projects = list; lastRendered.projects = JSON.stringify(list); queueCloudSave(); }
+  function buildProjectRow(text, idx) {
+    var li = document.createElement('li');
+    var t = document.createElement('span'); t.className = 'etext'; t.contentEditable = 'true'; t.textContent = text || '';
+    var timer = null;
+    t.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { var list = projectsGet(); list[idx] = t.textContent; projectsSave(list); }, 400);
+    });
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove project'); del.textContent = '\u00D7';
+    del.addEventListener('click', function () { var list = projectsGet(); list.splice(idx, 1); projectsSave(list); renderProjects(); });
+    li.appendChild(t); li.appendChild(del);
+    return li;
+  }
+  function renderProjects() {
+    var list = projectsGet();
+    projectsListEl.innerHTML = '';
+    list.forEach(function (item, idx) { projectsListEl.appendChild(buildProjectRow(item, idx)); });
+  }
+  $('projects-add').addEventListener('click', function () {
+    var list = projectsGet(); list.push(''); projectsSave(list); renderProjects();
+    var last = projectsListEl.lastElementChild; if (last) last.querySelector('.etext').focus();
+  });
+
+  /* ---------- Bucket list ---------- */
+  var bucketListEl = $('bucket-list');
+  function bucketGet() { return (cloud.state.bucket || []).slice(); }
+  function bucketSave(list) { cloud.state.bucket = list; lastRendered.bucket = JSON.stringify(list); queueCloudSave(); }
+  function buildBucketRow(item, idx) {
+    var li = document.createElement('li'); li.className = 'brow' + (item.done ? ' done' : '');
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'bchk'; btn.setAttribute('role', 'checkbox');
+    btn.setAttribute('aria-checked', item.done ? 'true' : 'false'); btn.setAttribute('aria-label', 'Toggle achieved');
+    btn.innerHTML = '<svg viewBox="0 0 40 40" aria-hidden="true"><path class="bx" d="M6 8 C14 6 26 7 34 6 C35 14 34 26 34 34 C26 35 14 34 6 35 C5 27 6 15 6 8Z"/><path class="tk" pathLength="1" d="M10 21 C13 24 15 28 17 31 C22 20 28 11 37 3"/></svg>';
+    var lbl = document.createElement('span'); lbl.className = 'lbl'; lbl.contentEditable = 'true'; lbl.textContent = item.text || '';
+    var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove item'); del.textContent = '\u00D7';
+    btn.addEventListener('click', function () {
+      var list = bucketGet(); list[idx].done = !list[idx].done; bucketSave(list);
+      var on = list[idx].done;
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
+      li.classList.toggle('done', on);
+      recordScoreIfNeeded();
+    });
+    var timer = null;
+    lbl.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { var list = bucketGet(); list[idx].text = lbl.textContent; bucketSave(list); }, 400);
+    });
+    del.addEventListener('click', function () { var list = bucketGet(); list.splice(idx, 1); bucketSave(list); renderBucket(); });
+    li.appendChild(btn); li.appendChild(lbl); li.appendChild(del);
+    return li;
+  }
+  function renderBucket() {
+    var list = bucketGet();
+    bucketListEl.innerHTML = '';
+    list.forEach(function (item, idx) { bucketListEl.appendChild(buildBucketRow(item, idx)); });
+  }
+  $('bucket-add').addEventListener('click', function () {
+    var list = bucketGet(); list.push({ text: '', done: false }); bucketSave(list); renderBucket();
+    var last = bucketListEl.lastElementChild; if (last) last.querySelector('.lbl').focus();
+  });
+
+  /* ---------- Password lock ---------- */
+  function fnv1a(s) {
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return 'x' + (h >>> 0).toString(16);
+  }
+  function hashPw(s) {
+    if (window.crypto && window.crypto.subtle) {
+      return window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+      }).catch(function () { return fnv1a(s); });
+    }
+    return Promise.resolve(fnv1a(s));
+  }
+  var lockScreen = $('lockScreen'), lockInput = $('lockInput'), lockGo = $('lockGo'), lockErr = $('lockErr');
+  var SESSION_KEY = 'now:unlocked';
+  function isUnlockedThisSession() { try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return false; } }
+  function markUnlocked() { try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {} }
+  function checkLock() {
+    var needsLock = !!cloud.state.pwHash && !isUnlockedThisSession();
+    lockScreen.hidden = !needsLock;
+    if (needsLock) setTimeout(function () { lockInput.focus(); }, 50);
+  }
+  function tryUnlock() {
+    hashPw(lockInput.value || '').then(function (h) {
+      if (h === cloud.state.pwHash) {
+        markUnlocked(); lockErr.hidden = true; lockInput.value = ''; checkLock();
+      } else {
+        lockErr.hidden = false; lockInput.value = ''; lockInput.focus();
+      }
+    });
+  }
+  lockGo.addEventListener('click', tryUnlock);
+  lockInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryUnlock(); });
+  $('lockBtn').addEventListener('click', function () {
+    if (!cloud.ready) { alert('Still connecting to storage \u2014 try again in a second.'); return; }
+    if (cloud.state.pwHash) {
+      var cur = prompt('Enter the current password to change it:');
+      if (cur === null) return;
+      hashPw(cur || '').then(function (h) {
+        if (h !== cloud.state.pwHash) { alert("That's not the current password."); return; }
+        var next = prompt('New password (leave blank to remove password protection):');
+        if (next === null) return;
+        if (next === '') {
+          delete cloud.state.pwHash; queueCloudSave(); markUnlocked(); checkLock();
+          alert('Password protection removed.');
+        } else {
+          hashPw(next).then(function (h2) { cloud.state.pwHash = h2; queueCloudSave(); markUnlocked(); checkLock(); alert('Password changed.'); });
+        }
+      });
+    } else {
+      var pw = prompt('Set a password for this page (leave blank to skip):');
+      if (pw === null || pw === '') return;
+      hashPw(pw).then(function (h) { cloud.state.pwHash = h; queueCloudSave(); markUnlocked(); checkLock(); alert('Password set. Anyone opening this link will need it.'); });
+    }
+  });
+
+  /* ---------- Roll cloud-persisted overrides + dynamic lists into view ---------- */
+  var bucketSeeded = false;
+  function isEditingWithin(el) {
+    return !!(el && document.activeElement && el.contains(document.activeElement) && document.activeElement !== document.body);
+  }
+  function applyCloudExtras() {
+    var f = cloud.state;
+    if (f['fit.composition'] && !isEditingWithin($('comp-rows')) && !shouldSkipRender('fit.composition', f['fit.composition'])) { renderComposition(f['fit.composition'], $('comp-rows')); wireComposition($('comp-rows')); }
+    if (f['fit.circumference'] && !isEditingWithin($('circ-rows')) && !shouldSkipRender('fit.circumference', f['fit.circumference'])) { renderMTable(f['fit.circumference'], $('circ-rows'), ['Measurement', 'Goal', 'Baseline', 'Current']); wireMTable($('circ-rows'), 'fit.circumference', updateCircStreak); }
+    if (f['fit.vitals'] && !isEditingWithin($('vital-rows')) && !shouldSkipRender('fit.vitals', f['fit.vitals'])) { renderMTable(f['fit.vitals'], $('vital-rows'), ['', 'Goal', 'Baseline', 'Current']); wireMTable($('vital-rows'), 'fit.vitals', null); }
+    if (f['fit.diet'] && !isEditingWithin($('diet-list')) && !shouldSkipRender('fit.diet', f['fit.diet'])) { renderFList(f['fit.diet'], $('diet-list')); }
+    if (f['fit.nutrition'] && !isEditingWithin($('nutri-rows')) && !shouldSkipRender('fit.nutrition', f['fit.nutrition'])) { renderMTable(f['fit.nutrition'], $('nutri-rows'), ['Nutrient', 'Recommended', 'Current']); wireMTable($('nutri-rows'), 'fit.nutrition', updateNutriStreak); }
+    if (f['fit.training'] && !isEditingWithin($('training-days')) && !shouldSkipRender('fit.training', f['fit.training'])) { renderTraining(f['fit.training'], $('training-days')); }
+    updateCompStreak(); updateCircStreak(); updateNutriStreak();
+
+    if (!currentNoteId && !shouldSkipRender('notes', f.notes || [])) renderNotesIndex();
+    if (!isEditingWithin(projectsListEl) && !shouldSkipRender('projects', f.projects || [])) renderProjects();
+    if (f.bucket === undefined && !bucketSeeded) {
+      bucketSeeded = true;
+      f.bucket = cloud.state.bucket = CONFIG.bucketSeed.map(function (t) { return { text: t, done: true }; });
+      queueCloudSave();
+    }
+    if (!isEditingWithin(bucketListEl) && !shouldSkipRender('bucket', f.bucket || [])) renderBucket();
+
+    checkLock();
+    drawGraph(f.history || []);
+    recordScoreIfNeeded();
+  }
+  applyCloudExtras();
+
+  /* ---------- Scatter the vision-board words behind the front page ---------- */
+  (function scatterDoodleWords() {
+    var g = document.querySelector('#tile g[filter]');
+    if (!g) return;
+    var W = 440, H = 600;
+    CONFIG.dreamWords.forEach(function (word) {
+      var x = 34 + rnd() * (W - 68), y = 30 + rnd() * (H - 60), rot = (rnd() - .5) * 24;
+      var t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('class', 'pt');
+      t.setAttribute('x', x.toFixed(1)); t.setAttribute('y', y.toFixed(1));
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('transform', 'rotate(' + rot.toFixed(1) + ' ' + x.toFixed(1) + ' ' + y.toFixed(1) + ')');
+      t.textContent = word;
+      g.appendChild(t);
+    });
+  })();
 
   var stack = $('stack'), leaf = $('leaf'), current = null, busy = false, ptimers = [];
   function later(fn, ms) { ptimers.push(setTimeout(fn, ms)); }
@@ -1090,6 +1812,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/f
   });
   function requestBack() {
     if (!current) return;
+    if (current === 'notes' && currentNoteId) { closeNote(); return; }
     if (history.state && history.state.sub) { history.back(); } else { back(); }
   }
   Array.prototype.forEach.call(document.querySelectorAll('.back'), function (b) {
