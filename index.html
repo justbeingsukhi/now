@@ -112,6 +112,10 @@ h1{
 .tab .ic{width:19px;height:19px;flex:none}
 .tab .ic path,.tab .ic rect{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tab:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.sync-status{margin:8px 0 0;font-size:1.05rem;color:var(--ink-2)}
+.sync-status.ok{color:#2a7a4f;font-weight:700}
+.sync-status.err{color:#a33;font-weight:700}
+.sync-status button{border:0;background:none;padding:0;margin-left:6px;color:inherit;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
 .mini{
   --w:64px;
   position:relative;display:block;padding:0;border:0;background:none;cursor:pointer;
@@ -650,6 +654,7 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
                 </button>
               </div>
             </header>
+            <p class="sync-status" id="syncStatus" role="status">Checking how your changes are saved&hellip;</p>
 
             <h1 data-hand>Nothing will change if you change nothing.</h1>
 
@@ -1005,11 +1010,25 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
     cloud.applying = false;
     applyCloudExtras();
   }
+  var syncEl = $('syncStatus');
+  function setSyncStatus(text, cls, detail) {
+    if (!syncEl) return;
+    syncEl.className = 'sync-status' + (cls ? ' ' + cls : '');
+    syncEl.textContent = text;
+    if (detail) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = 'details';
+      b.addEventListener('click', function () { alert(detail); });
+      syncEl.appendChild(b);
+    }
+  }
   (function initCloud() {
     if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey.indexOf('PASTE_') === 0) {
       console.warn('NOW: Firebase is not configured yet, so notes are only saving to this browser. Fill in FIREBASE_CONFIG near the top of the script.');
+      setSyncStatus('Saving to this browser only \u2014 Firebase isn\u2019t set up yet.', '');
       return;
     }
+    setSyncStatus('Connecting to your database\u2026', '');
     // Dynamic imports: if the CDN can't be reached (offline, a blocked
     // domain, no network), this fails quietly and the rest of the page
     // keeps working with the local-only fallback -- a static top-level
@@ -1024,13 +1043,21 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
       var app = initializeApp(FIREBASE_CONFIG);
       var firestore = getFirestore(app);
       cloud.ref = doc(firestore, 'now', 'state');
+      var firstSnapshot = true;
       onSnapshot(cloud.ref, function (snap) {
         var incoming = (snap.exists() && snap.data()) || {};
         for (var k in incoming) if (Object.prototype.hasOwnProperty.call(incoming, k)) cloud.state[k] = incoming[k];
         cloud.ready = true;
         applyCloudToUI();
-      }, function (err) { console.warn('NOW: cloud sync error', err); });
-    }).catch(function (e) { console.warn('NOW: Firebase failed to load -- saving to this browser only.', e); });
+        if (firstSnapshot) { firstSnapshot = false; setSyncStatus('Synced \u2014 changes save on every device.', 'ok'); }
+      }, function (err) {
+        console.warn('NOW: cloud sync error', err);
+        setSyncStatus('Could not sync \u2014 saving to this browser only.', 'err', String((err && err.message) || err));
+      });
+    }).catch(function (e) {
+      console.warn('NOW: Firebase failed to load -- saving to this browser only.', e);
+      setSyncStatus('Could not reach Firebase \u2014 saving to this browser only.', 'err', String((e && e.message) || e));
+    });
   })();
 
   var seed = 20260920;
