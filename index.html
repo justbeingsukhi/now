@@ -314,6 +314,8 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
 .exlist .ex-body{flex:1;min-width:0}
 .exlist .ex-name{display:block;font-weight:700}
 .exlist .ex-spec{display:block;color:var(--ink-2)}
+.exlist .ex-rest{display:block;color:var(--ink-2);font-style:italic;font-size:1.12rem;margin-top:1px}
+.exlist .ex-rest:empty::before{content:"Rest between sets";opacity:.42}
 
 .checks{list-style:none;padding:0;display:grid;gap:14px}
 .cb{display:flex;align-items:center;gap:16px;width:100%;padding:6px 0;border:0;background:none;text-align:left;cursor:pointer;font-weight:700;font-size:2.3rem;line-height:1.05;-webkit-tap-highlight-color:transparent}
@@ -956,9 +958,27 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
   };
   // ==========================================================
 
-  var cloud = { ref: null, state: {}, ready: false, applying: false, setDoc: null };
+  // Everything below is saved to this browser's storage immediately,
+  // every time -- with or without Firebase configured. Firebase (when
+  // set up) additionally syncs the same data to every other device.
+  // This is what makes edits survive a refresh even before Firebase is
+  // configured, and it's also what a page opened straight from a saved
+  // file relies on, since it has no Firebase connection at all.
+  var LOCAL_STATE_KEY = 'now:cloudstate';
+  function loadLocalState() {
+    try {
+      var raw = localStorage.getItem(LOCAL_STATE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveLocalState() {
+    try { localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(cloud.state)); } catch (e) {}
+  }
+
+  var cloud = { ref: null, state: loadLocalState(), ready: false, applying: false, setDoc: null };
   var cloudTimer = null;
   function queueCloudSave() {
+    saveLocalState();
     if (!cloud.ready || !cloud.ref || !cloud.setDoc) return;
     clearTimeout(cloudTimer);
     cloudTimer = setTimeout(function () {
@@ -1324,17 +1344,19 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
   }
 
   /* ---------- Training log (view-only) ---------- */
-  function buildExerciseRow(dayId, name, spec) {
+  function buildExerciseRow(dayId, name, spec, rest) {
     var li = document.createElement('li');
     var body = document.createElement('div'); body.className = 'ex-body';
     var nm = document.createElement('span'); nm.className = 'ex-name'; nm.contentEditable = 'true'; nm.textContent = name || '';
     var sp = document.createElement('span'); sp.className = 'ex-spec'; sp.contentEditable = 'true'; sp.textContent = spec || '';
-    body.appendChild(nm); body.appendChild(sp);
+    var rs = document.createElement('span'); rs.className = 'ex-rest'; rs.contentEditable = 'true'; rs.setAttribute('aria-label', 'Rest between sets'); rs.textContent = rest || '';
+    body.appendChild(nm); body.appendChild(sp); body.appendChild(rs);
     var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.setAttribute('aria-label', 'Remove exercise'); del.textContent = '\u00D7';
     li.appendChild(body); li.appendChild(del);
     var save = function () { if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); }); };
     nm.addEventListener('input', save);
     sp.addEventListener('input', save);
+    rs.addEventListener('input', save);
     del.addEventListener('click', function () { li.remove(); save(); });
     return li;
   }
@@ -1352,12 +1374,12 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
       sum.textContent = d.day + ' \u2014 ' + d.split;
       det.appendChild(sum);
       var ul = document.createElement('ul'); ul.className = 'exlist';
-      d.ex.forEach(function (pair) { ul.appendChild(buildExerciseRow(di, pair[0], pair[1])); });
+      d.ex.forEach(function (pair) { ul.appendChild(buildExerciseRow(di, pair[0], pair[1], pair[2])); });
       det.appendChild(ul);
       var add = document.createElement('button'); add.type = 'button'; add.className = 'add';
       add.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>Add exercise';
       add.addEventListener('click', function () {
-        var row = buildExerciseRow(di, '', '');
+        var row = buildExerciseRow(di, '', '', '');
         ul.appendChild(row);
         if (!cloud.applying) debounceSave('fit.training', function () { return readTraining($('training-days')); });
         row.querySelector('.ex-name').focus();
@@ -1374,7 +1396,8 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
       var head = cleanText(el.querySelector('summary')).split('\u2014');
       var ex = [];
       Array.prototype.forEach.call(el.querySelectorAll('.exlist li'), function (li) {
-        ex.push([li.querySelector('.ex-name').textContent.trim(), li.querySelector('.ex-spec').textContent.trim()]);
+        var restEl = li.querySelector('.ex-rest');
+        ex.push([li.querySelector('.ex-name').textContent.trim(), li.querySelector('.ex-spec').textContent.trim(), restEl ? restEl.textContent.trim() : '']);
       });
       days.push({ day: (head[0] || '').trim(), split: (head[1] || '').trim(), ex: ex });
     });
@@ -1514,7 +1537,6 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
     var box = $('lifeGraph'); if (box) { box.classList.remove('go'); void box.offsetWidth; box.classList.add('go'); }
   }
   function recordScoreIfNeeded() {
-    if (!cloud.ready) return;
     var today = new Date().toISOString().slice(0, 10);
     var hist = (cloud.state.history || []).slice();
     var score = computeLifeScore();
@@ -1691,7 +1713,6 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
   lockGo.addEventListener('click', tryUnlock);
   lockInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') tryUnlock(); });
   $('lockBtn').addEventListener('click', function () {
-    if (!cloud.ready) { alert('Still connecting to storage \u2014 try again in a second.'); return; }
     if (cloud.state.pwHash) {
       var cur = prompt('Enter the current password to change it:');
       if (cur === null) return;
