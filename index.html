@@ -989,7 +989,7 @@ details.day[open]>summary::after{transform:rotate(-135deg);margin-top:-6px}
     cloudTimer = setTimeout(function () {
       var body = {};
       for (var k in cloud.state) if (Object.prototype.hasOwnProperty.call(cloud.state, k)) body[k] = cloud.state[k];
-      cloud.setDoc(cloud.ref, body).catch(function () {});
+      cloud.setDoc(cloud.ref, body, { merge: true }).catch(function () {});
     }, 700);
   }
   function applyCloudToUI() {
